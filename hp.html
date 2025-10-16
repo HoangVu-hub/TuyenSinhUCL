@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Học Phí - Đại Học Cửu Long</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 15px;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') no-repeat center/cover;
+            opacity: 0.05;
+            z-index: -1;
+            animation: subtleZoom 20s ease-in-out infinite alternate;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 15px;
+            animation: bounceIn 1s ease-out;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+        .main-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out;
+        }
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 237, 234, 0.05) 0%, transparent 70%);
+            animation: rotate 40s linear infinite;
+            pointer-events: none;
+        }
+        .main-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.6em;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 0.95em;
+        }
+        .form-select, .form-control, #majorInput, #searchInput {
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 0.95em;
+            background: #f9f9f9;
+        }
+        #searchInput {
+            width: 100%;
+            max-width: 250px;
+            margin-bottom: 10px;
+        }
+        /* Custom dropdown for major selection */
+        .major-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .major-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 3px 9px rgba(0, 0, 0, 0.1);
+        }
+        .major-suggestion-item {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s ease;
+            font-size: 0.9em;
+        }
+        .major-suggestion-item:hover,
+        .major-suggestion-item.highlighted {
+            background: #e3f2fd;
+        }
+        .major-suggestion-item:last-child {
+            border-bottom: none;
+        }
+        .highlight-text {
+            background-color: yellow;
+            font-weight: bold;
+            padding: 1px;
+        }
+        .btn-calc {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 0.95em;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(79, 195, 247, 0.3);
+            margin: 8px;
+        }
+        .btn-calc:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.4);
+            color: white;
+        }
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid #e9ecef;
+        }
+        .results table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .results th, .results td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .results th {
+            background: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+        .results .fee-original {
+            color: #1976d2;
+            font-weight: bold;
+        }
+        .data-table-section {
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+        }
+        .data-table-section h4 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .major-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .major-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+        .major-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .major-card .stt {
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 0.8em;
+        }
+        .major-card .name {
+            font-weight: bold;
+            margin: 5px 0;
+            color: #333;
+        }
+        .major-card .duration {
+            color: #666;
+            font-size: 0.8em;
+        }
+        .major-card .fee {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .highlight-card {
+            border-color: #ffc107;
+            background: #fff9c4;
+        }
+        .discount-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-radius: 10px;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        .discount-section h3 {
+            margin-bottom: 10px;
+            color: #1976d2;
+            font-size: 1.1em;
+        }
+        .slider-container {
+            margin: 10px 0;
+        }
+        .slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1976d2;
+            cursor: pointer;
+        }
+        .discount-table {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 0.9em;
+        }
+        .discount-table th, .discount-table td {
+            padding: 8px;
+            text-align: center;
+        }
+        .discount-table th {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .discount-table .reduced {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .discount-table .remaining {
+            color: #1976d2;
+            font-weight: bold;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .back-btn {
+            background: linear-gradient(135deg, #757575 0%, #424242 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+        .back-btn:hover {
+            transform: translateY(-1px);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 3px 12px rgba(117, 117, 117, 0.3);
+        }
+        .fee-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+        .fee-btn:hover {
+            transform: translateY(-1px);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 3px 12px rgba(76, 175, 80, 0.3);
+        }
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes subtleZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-card {
+                padding: 15px;
+                margin: 5px;
+            }
+            h1 {
+                font-size: 1.4em;
+            }
+            .major-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 8px;
+            }
+            .major-card {
+                padding: 8px;
+                font-size: 0.8em;
+            }
+            .major-suggestions {
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                max-width: 900px;
+            }
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img src="https://upload.wikimedia.org/wikipedia/vi/d/de/Logo_Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_C%E1%BB%ADu_Long.svg" alt="Logo Đại học Cửu Long" class="logo">
+    </div>
+    
+    <div class="main-card">
+        <h1><i class="fas fa-money-bill-wave"></i> Tính Học Phí DHCL</h1>
+        <p class="text-muted">Danh sách học phí chi tiết cho năm 2025 và công cụ tính toán.</p>
+        
+        <!-- Danh sách ngành dạng grid ngang -->
+        <div class="data-table-section">
+            <h4><i class="fas fa-table"></i> Danh Sách Ngành & Học Phí Năm 2025</h4>
+            <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm ngành (ví dụ: cntt để highlight 'CNTT'...)">
+            <div class="major-grid" id="majorGrid">
+                <!-- JS sẽ điền cards -->
+            </div>
+        </div>
+        
+        <form id="feeForm">
+            <div class="form-group">
+                <label for="yearSelect" class="form-label">Chọn Năm Tuyển Sinh:</label>
+                <select id="yearSelect" class="form-select">
+                    <option value="2025">2025</option>
+                    <option value="2026" disabled>2026 (Sắp cập nhật)</option>
+                    <option value="2027" disabled>2027 (Sắp cập nhật)</option>
+                </select>
+            </div>
+            
+            <div class="form-group major-dropdown">
+                <label for="majorInput" class="form-label">Chọn Ngành Đào Tạo:</label>
+                <input type="text" id="majorInput" class="form-control" placeholder="Gõ để tìm kiếm ngành (ví dụ: 'cntt' để gợi ý Công Nghệ Thông Tin...)">
+                <ul id="majorSuggestions" class="major-suggestions list-unstyled">
+                    <!-- JS sẽ điền suggestions -->
+                </ul>
+            </div>
+            
+            <button type="button" class="btn btn-calc" onclick="calculateFee()">
+                <i class="fas fa-calculator"></i> Tính Học Phí
+            </button>
+        </form>
+        
+        <div id="results" class="results" style="display: none;">
+            <h4><i class="fas fa-chart-line"></i> Kết Quả Học Phí (Gốc)</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loại Học Phí</th>
+                        <th>Số Tiền (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultItems">
+                    <!-- Nội dung sẽ được JS điền -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="discount-section">
+            <h3><i class="fas fa-percentage"></i> Miễn Giảm Học Phí</h3>
+            <p>Giả sử bạn được giảm X% học phí toàn khóa, số tiền tiết kiệm và phải đóng sẽ là:</p>
+            <div class="slider-container">
+                <label for="discountSlider">Tỷ lệ giảm (%): <span id="discountValue">0</span>%</label>
+                <input type="range" id="discountSlider" class="slider" min="0" max="100" value="0" oninput="updateDiscount()">
+            </div>
+            <table class="table table-bordered discount-table">
+                <thead>
+                    <tr>
+                        <th>Loại Học Phí</th>
+                        <th>Số Tiền Gốc (VNĐ)</th>
+                        <th>Số Tiền Giảm (VNĐ)</th>
+                        <th>Số Tiền Còn Lại (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody id="discountTableBody">
+                    <!-- Nội dung sẽ được JS điền khi có discount -->
+                </tbody>
+            </table>
+            <small>Ví dụ: Giảm 20% = Tiết kiệm 20% tổng học phí toàn khóa. (Dựa trên chính sách trường)</small>
+        </div>
+        
+        <div class="btn-container">
+            <a href="giaodien.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Quay Lại Trang Chủ
+            </a>
+            <a href="https://tuyensinh.mku.edu.vn/hoc-phi" class="fee-btn" target="_blank">
+                <i class="fas fa-graduation-cap"></i> MỨC HỌC PHÍ CÁC NGÀNH HỆ ĐẠI HỌC CHÍNH QUY CỦA TRƯỜNG ĐẠI HỌC CỬU LONG
+            </a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dữ liệu học phí 2025 từ file Excel (hardcode array)
+        const feeData = {
+            2025: [
+                { name: 'Y khoa', duration: 6, feePerSemester: 34000000 },
+                { name: 'Y học cổ truyền', duration: 6, feePerSemester: 30500000 },
+                { name: 'Răng, Hàm, Mặt', duration: 6, feePerSemester: 39000000 },
+                { name: 'Kỹ thuật hình ảnh y học', duration: 3.5, feePerSemester: 14000000 },
+                { name: 'Kỹ thuật phục hồi chức năng', duration: 3.5, feePerSemester: 14000000 },
+                { name: 'Hộ sinh', duration: 3.5, feePerSemester: 14500000 },
+                { name: 'Dược học', duration: 4, feePerSemester: 18750000 },
+                { name: 'Kỹ thuật xét nghiệm y học', duration: 3.5, feePerSemester: 11600000 },
+                { name: 'Điều dưỡng', duration: 3.5, feePerSemester: 11600000 },
+                { name: 'Tiếng Việt và Văn hóa Việt Nam', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Ngôn ngữ Anh', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Đông phương học', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Công tác xã hội', duration: 3.5, feePerSemester: 8050000 },
+                { name: 'Marketing', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Quản trị kinh doanh', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Quản lý kinh tế', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Kinh doanh thương mại', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Tài chính – Ngân hàng', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Kế toán', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Thiết kế đồ họa', duration: 3.5, feePerSemester: 13300000 },
+                { name: 'Luật', duration: 3.5, feePerSemester: 8050000 },
+                { name: 'Luật kinh tế', duration: 3.5, feePerSemester: 8050000 },
+                { name: 'Quản trị dịch vụ du lịch và lữ hành', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Công nghệ kỹ thuật công trình xây dựng', duration: 4, feePerSemester: 8500000 },
+                { name: 'Công nghệ kỹ thuật điện – điện tử', duration: 4, feePerSemester: 8500000 },
+                { name: 'Kỹ thuật y sinh', duration: 4, feePerSemester: 8500000 },
+                { name: 'Kỹ thuật xây dựng công trình giao thông', duration: 4, feePerSemester: 8500000 },
+                { name: 'Công nghệ kỹ thuật ô tô', duration: 4, feePerSemester: 8500000 },
+                { name: 'Công nghệ kỹ thuật cơ khí', duration: 4, feePerSemester: 8500000 },
+                { name: 'Công nghệ thông tin', duration: 4, feePerSemester: 8800000 },
+                { name: 'Công nghệ thực phẩm', duration: 4, feePerSemester: 8800000 },
+                { name: 'Nông học', duration: 4, feePerSemester: 8800000 },
+                { name: 'Bảo vệ thực vật', duration: 4, feePerSemester: 8000000 },
+                { name: 'Nuôi trồng thủy sản', duration: 4, feePerSemester: 8800000 },
+                { name: 'Thú y', duration: 5, feePerSemester: 6600000 },
+                { name: 'Công nghệ tài chính', duration: 3.5, feePerSemester: 8100000 },
+                { name: 'Quan hệ công chúng', duration: 3.5, feePerSemester: 8600000 },
+                { name: 'Truyền thông đa phương tiện', duration: 3.5, feePerSemester: 8600000 }
+            ],
+            // Mẫu placeholder cho 2026 - Bạn có thể điền dữ liệu tương tự khi có
+            2026: [
+                // Ví dụ: { name: 'Y khoa', duration: 6, feePerSemester: 35000000 }, // Tăng nhẹ so với 2025
+                // Thêm các ngành khác ở đây...
+            ]
+        };
+
+        let currentMajor = null; // Lưu dữ liệu ngành hiện tại
+        let originalNames = []; // Lưu tên gốc để restore highlight
+        let currentMajors = []; // Danh sách ngành hiện tại theo năm
+        let selectedIndex = -1; // Index cho keyboard navigation
+
+        // Function để lấy viết tắt (acronym) từ tên ngành
+        function getAcronym(name) {
+            return name.toLowerCase().split(/\s+/).map(word => word.charAt(0)).join('');
+        }
+
+        // Kiểm tra match: substring hoặc acronym
+        function matchesQuery(name, query) {
+            const lowerName = name.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+            return lowerName.includes(lowerQuery) || getAcronym(name).includes(lowerQuery);
+        }
+
+        // Load danh sách ngành dạng grid
+        function loadMajorGrid() {
+            const grid = document.getElementById('majorGrid');
+            grid.innerHTML = '';
+            originalNames = []; // Reset
+            currentMajors = feeData['2025'];
+            currentMajors.forEach((major, index) => {
+                const card = document.createElement('div');
+                card.className = 'major-card';
+                card.innerHTML = `
+                    <div class="stt">${index + 1}</div>
+                    <div class="name">${major.name}</div>
+                    <div class="duration">${major.duration} năm</div>
+                    <div class="fee">${major.feePerSemester.toLocaleString()} VNĐ</div>
+                `;
+                card.onclick = () => {
+                    document.getElementById('majorInput').value = major.name;
+                    document.getElementById('majorSuggestions').style.display = 'none';
+                    // Highlight card tạm thời
+                    document.querySelectorAll('.major-card').forEach(c => c.classList.remove('highlight-card'));
+                    card.classList.add('highlight-card');
+                    setTimeout(() => card.classList.remove('highlight-card'), 1000);
+                };
+                grid.appendChild(card);
+                originalNames.push(major.name); // Lưu tên gốc
+            });
+        }
+
+        // Clear tất cả highlights cho grid
+        function clearGridHighlights() {
+            const cards = document.querySelectorAll('.major-card');
+            cards.forEach((card, index) => {
+                const nameDiv = card.querySelector('.name');
+                nameDiv.innerHTML = originalNames[index]; // Restore original
+                card.classList.remove('highlight-card'); // Clear class nếu có
+            });
+        }
+
+        // Highlight và scroll to match cho grid (chỉ highlight first match để tránh lộn xộn)
+        function highlightGridSearch() {
+            const searchValue = document.getElementById('searchInput').value.trim();
+            if (searchValue === '') {
+                clearGridHighlights();
+                return;
+            }
+
+            const lowerSearch = searchValue.toLowerCase();
+            clearGridHighlights(); // Clear trước
+            const cards = document.querySelectorAll('.major-card');
+            let firstMatch = null;
+
+            cards.forEach((card, index) => {
+                const majorText = originalNames[index];
+                const nameDiv = card.querySelector('.name');
+
+                if (matchesQuery(majorText, searchValue) && !firstMatch) { // Chỉ lấy first match
+                    let highlighted = majorText;
+                    // Nếu match substring, highlight substring
+                    if (majorText.toLowerCase().includes(lowerSearch)) {
+                        const regex = new RegExp(`(${lowerSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        highlighted = majorText.replace(regex, '<span class="highlight">$1</span>');
+                    } else {
+                        // Nếu match acronym, highlight chữ cái đầu của từ tương ứng
+                        const words = majorText.split(/\s+/);
+                        const acronym = getAcronym(majorText);
+                        const regex = new RegExp(`(${lowerSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        const matchingAcronym = acronym.match(regex)[0];
+                        // Tìm vị trí trong acronym và highlight char đầu từ tương ứng
+                        const pos = acronym.indexOf(matchingAcronym);
+                        for (let i = 0; i < matchingAcronym.length; i++) {
+                            const wordIndex = pos + i;
+                            if (wordIndex < words.length) {
+                                words[wordIndex] = '<span class="highlight">' + words[wordIndex].charAt(0) + '</span>' + words[wordIndex].slice(1);
+                            }
+                        }
+                        highlighted = words.join(' ');
+                    }
+                    nameDiv.innerHTML = highlighted;
+                    card.classList.add('highlight-card');
+                    firstMatch = card;
+                }
+            });
+
+            // Scroll to first match nếu có
+            if (firstMatch) {
+                firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => { 
+                    clearGridHighlights(); 
+                }, 2000); // Clear sau 2s
+            }
+        }
+
+        // Load danh sách ngành theo năm
+        function loadMajorsByYear(year) {
+            currentMajors = feeData[year] || [];
+            updateMajorSuggestions();
+            loadMajorGrid(); // Reload grid
+        }
+
+        // Highlight text function (cho substring)
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(regex, '<span class="highlight-text">$1</span>');
+        }
+
+        // Highlight acronym match
+        function highlightAcronymMatch(text, query) {
+            const words = text.split(/\s+/);
+            const acronym = getAcronym(text);
+            const lowerQuery = query.toLowerCase();
+            if (acronym.includes(lowerQuery)) {
+                const pos = acronym.indexOf(lowerQuery);
+                for (let i = 0; i < lowerQuery.length; i++) {
+                    const wordIndex = pos + i;
+                    if (wordIndex < words.length) {
+                        words[wordIndex] = '<span class="highlight-text">' + words[wordIndex].charAt(0) + '</span>' + words[wordIndex].slice(1);
+                    }
+                }
+                return words.join(' ');
+            }
+            return text;
+        }
+
+        // Update suggestions list
+        function updateMajorSuggestions() {
+            const input = document.getElementById('majorInput');
+            const suggestions = document.getElementById('majorSuggestions');
+            const query = input.value.trim();
+            suggestions.innerHTML = '';
+
+            if (query === '') {
+                suggestions.style.display = 'none';
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const filtered = currentMajors.filter(major => matchesQuery(major.name, query));
+            if (filtered.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+
+            filtered.forEach((major, index) => {
+                const li = document.createElement('li');
+                li.className = 'major-suggestion-item';
+                // Highlight dựa trên match type
+                let highlightedName = major.name;
+                if (major.name.toLowerCase().includes(lowerQuery)) {
+                    highlightedName = highlightMatch(major.name, query);
+                } else {
+                    highlightedName = highlightAcronymMatch(major.name, query);
+                }
+                li.innerHTML = highlightedName;
+                li.onclick = () => selectMajor(major.name);
+                suggestions.appendChild(li);
+            });
+
+            suggestions.style.display = 'block';
+            selectedIndex = -1; // Reset selection
+        }
+
+        // Select major from suggestion
+        function selectMajor(name) {
+            document.getElementById('majorInput').value = name;
+            document.getElementById('majorSuggestions').style.display = 'none';
+        }
+
+        // Keyboard navigation for suggestions
+        function handleKeyDown(event) {
+            const suggestions = document.getElementById('majorSuggestions');
+            const items = suggestions.querySelectorAll('.major-suggestion-item');
+            if (items.length === 0) return;
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelection(items);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelection(items);
+            } else if (event.key === 'Enter' && selectedIndex >= 0) {
+                event.preventDefault();
+                selectMajor(items[selectedIndex].textContent.replace(/<[^>]*>/g, '').trim());
+            } else if (event.key === 'Escape') {
+                suggestions.style.display = 'none';
+                selectedIndex = -1;
+            }
+        }
+
+        function updateSelection(items) {
+            items.forEach((item, idx) => {
+                item.classList.toggle('highlighted', idx === selectedIndex);
+            });
+        }
+
+        // Load danh sách ngành khi chọn năm
+        document.getElementById('yearSelect').addEventListener('change', function() {
+            const year = this.value;
+            loadMajorsByYear(year);
+            document.getElementById('majorInput').value = ''; // Reset input
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('discountTableBody').innerHTML = ''; // Reset discount table
+        });
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', highlightGridSearch);
+        const majorInput = document.getElementById('majorInput');
+        majorInput.addEventListener('input', updateMajorSuggestions);
+        majorInput.addEventListener('keydown', handleKeyDown);
+        majorInput.addEventListener('blur', () => {
+            setTimeout(() => { document.getElementById('majorSuggestions').style.display = 'none'; }, 200);
+        });
+
+        // Tính học phí
+        function calculateFee() {
+            const year = document.getElementById('yearSelect').value;
+            const majorName = document.getElementById('majorInput').value.trim();
+            
+            if (!year || !majorName) {
+                alert('Vui lòng chọn năm và ngành!');
+                return;
+            }
+            
+            const majors = feeData[year];
+            currentMajor = majors.find(m => m.name === majorName);
+            if (!currentMajor) {
+                alert('Không tìm thấy dữ liệu ngành!');
+                return;
+            }
+            
+            // Tính số học kỳ: duration * 2 (làm tròn lên cho .5 năm)
+            const semesters = Math.ceil(currentMajor.duration * 2);
+            const feePerSemester = currentMajor.feePerSemester;
+            const feePerYear = feePerSemester * 2;
+            const totalCourseFee = feePerSemester * semesters;
+            
+            // Hiển thị bảng kết quả gốc
+            const resultItems = document.getElementById('resultItems');
+            resultItems.innerHTML = `
+                <tr>
+                    <td>Thời gian đào tạo</td>
+                    <td>${currentMajor.duration} năm</td>
+                </tr>
+                <tr>
+                    <td>Học phí / học kỳ</td>
+                    <td class="fee-original">${feePerSemester.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <td>Học phí / năm (2 HK)</td>
+                    <td class="fee-original">${feePerYear.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <td>Tổng học phí toàn khóa (${semesters} HK)</td>
+                    <td class="fee-original">${totalCourseFee.toLocaleString()}</td>
+                </tr>
+            `;
+            
+            document.getElementById('results').style.display = 'block';
+            updateDiscount(); // Cập nhật discount ngay (với 0%)
+        }
+
+        // Cập nhật slider giảm %
+        function updateDiscount() {
+            const discount = parseInt(document.getElementById('discountSlider').value);
+            document.getElementById('discountValue').textContent = discount;
+            
+            if (!currentMajor) {
+                document.getElementById('discountTableBody').innerHTML = '<tr><td colspan="4">Vui lòng tính học phí trước!</td></tr>';
+                return;
+            }
+            
+            const feePerSemester = currentMajor.feePerSemester;
+            const feePerYear = feePerSemester * 2;
+            const semesters = Math.ceil(currentMajor.duration * 2);
+            const totalCourseFee = feePerSemester * semesters;
+            
+            // Tính giảm cho từng loại (giả sử % áp dụng cho từng đơn vị tương ứng)
+            const reducedPerSemester = (feePerSemester * discount / 100);
+            const reducedPerYear = (feePerYear * discount / 100);
+            const reducedTotal = (totalCourseFee * discount / 100);
+            
+            const remainingPerSemester = feePerSemester - reducedPerSemester;
+            const remainingPerYear = feePerYear - reducedPerYear;
+            const remainingTotal = totalCourseFee - reducedTotal;
+            
+            // Hiển thị bảng discount
+            const discountTableBody = document.getElementById('discountTableBody');
+            discountTableBody.innerHTML = `
+                <tr>
+                    <td>Học phí / học kỳ</td>
+                    <td>${feePerSemester.toLocaleString()}</td>
+                    <td class="reduced">${reducedPerSemester.toLocaleString()}</td>
+                    <td class="remaining">${remainingPerSemester.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <td>Học phí / năm (2 HK)</td>
+                    <td>${feePerYear.toLocaleString()}</td>
+                    <td class="reduced">${reducedPerYear.toLocaleString()}</td>
+                    <td class="remaining">${remainingPerYear.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <td>Tổng học phí toàn khóa (${semesters} HK)</td>
+                    <td>${totalCourseFee.toLocaleString()}</td>
+                    <td class="reduced">${reducedTotal.toLocaleString()}</td>
+                    <td class="remaining">${remainingTotal.toLocaleString()}</td>
+                </tr>
+            `;
+        }
+
+        // Load mặc định: Grid và majors cho 2025
+        loadMajorGrid();
+        loadMajorsByYear('2025');
+    </script>
+</body>
+</html>

@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Điểm Tổ Hợp Môn Và Ngành Có Tỉ Lệ xét tuyển Đậu Cao Nhất Đại Học Cửu Long</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.9em; /* Giảm kích thước font tổng thể để gọn hơn */
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px; /* Giảm kích thước logo */
+            height: auto;
+        }
+        .form-control, .form-select {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            border-radius: 6px; /* Giảm border-radius */
+            padding: 6px 8px; /* Giảm padding */
+            font-size: 0.9em;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: white;
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.15rem rgba(102, 126, 234, 0.25);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px; /* Giảm border-radius */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* Giảm shadow */
+            backdrop-filter: blur(10px);
+            margin-bottom: 15px;
+        }
+        #resultTable {
+            font-size: 0.8em; /* Giảm font bảng */
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 20px; /* Giảm radius */
+            padding: 8px 20px; /* Giảm padding */
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .btn-secondary {
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        .input-row, .priority-row {
+            margin-bottom: 15px; /* Giảm margin */
+        }
+        .input-col, .priority-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .input-label, .priority-label {
+            font-weight: bold;
+            margin-bottom: 3px; /* Giảm margin */
+            text-align: left;
+            min-width: 100px; /* Giảm min-width */
+            color: #495057;
+            font-size: 0.85em;
+        }
+        .score-cell {
+            background-color: #e7f3ff;
+            font-weight: bold;
+            text-align: center;
+            color: #0056b3;
+            border: 1px solid #b3d9ff;
+            border-radius: 3px;
+            padding: 2px; /* Giảm padding */
+            font-size: 0.8em;
+        }
+        .thm-cell {
+            background-color: #d1ecf1 !important;
+            font-weight: bold;
+            text-align: center;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            border-radius: 3px;
+            padding: 2px;
+            font-size: 0.8em;
+        }
+        .max-score-cell {
+            background-color: #fff3cd !important;
+            font-weight: bold;
+            text-align: center;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            border-radius: 3px;
+            padding: 2px;
+            font-size: 0.8em;
+        }
+        .final-score-cell {
+            background-color: #d4edda;
+            font-weight: bold;
+            text-align: center;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 3px;
+            padding: 2px;
+            font-size: 0.8em;
+        }
+        .floor-score-cell {
+            background-color: #f8d7da !important;
+            font-weight: bold;
+            text-align: center;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 3px;
+            padding: 2px;
+            font-size: 0.8em;
+        }
+        .result-cell {
+            font-weight: bold;
+            text-align: center;
+            padding: 4px; /* Giảm padding */
+            border-radius: 3px;
+            min-width: 60px; /* Giảm min-width */
+            font-size: 0.8em;
+        }
+        .result-pass {
+            color: #28a745;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .result-fail {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .tbm-cell {
+            background-color: #e2e3e5 !important;
+            font-weight: bold;
+            text-align: center;
+            color: #495057;
+            border: 1px solid #d1d4d7;
+            border-radius: 3px;
+            padding: 2px;
+            font-size: 0.8em;
+        }
+        /* Màu chung cho nhóm THM HB */
+        .hb-group {
+            background-color: #d4edda !important;
+            border: 1px solid #c3e6cb;
+        }
+        /* Màu chung cho nhóm THM THPT */
+        .thpt-group {
+            background-color: #e7f3ff !important;
+            border: 1px solid #b3d9ff;
+        }
+        /* Màu chung cho nhóm TBM */
+        .tbm-group {
+            background-color: #fff3cd !important;
+            border: 1px solid #ffeaa7;
+        }
+        .note {
+            font-style: italic;
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+        #topMajorsTable {
+            margin-top: 15px;
+        }
+        #tbmSection {
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px; /* Giảm padding */
+            background-color: rgba(0, 123, 255, 0.1);
+            border-radius: 8px;
+        }
+        #tbmSection p {
+            font-size: 0.95em; /* Giảm font */
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        #comparisonSection {
+            margin-top: 15px;
+        }
+        #comparisonSection.hidden {
+            display: none;
+        }
+        .year-select-row {
+            margin-bottom: 15px;
+        }
+        .btn-group {
+            margin-top: 8px;
+        }
+        .table th {
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            background-color: #343a40 !important;
+            color: white;
+            border: 1px solid #dee2e6;
+            font-size: 0.75em; /* Giảm font header */
+            padding: 4px; /* Giảm padding */
+        }
+        /* Màu cho header THM */
+        #resultTable thead th:nth-last-child(3) {
+            background-color: #17a2b8 !important;
+            color: white !important;
+            font-weight: bolder !important;
+        }
+        /* Màu cho header Điểm THM */
+        #resultTable thead th:nth-last-child(2) {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+            font-weight: bolder !important;
+        }
+        /* Màu cho header TBM x3 + Ưu tiên */
+        #resultTable thead th:nth-last-child(1) {
+            background-color: #6c757d !important;
+            color: white !important;
+            font-weight: bolder !important;
+        }
+        /* Màu xanh cho các cột số 1-9 trong header (vị trí lẻ: 3,5,7,...,19) */
+        #resultTable thead tr:nth-child(2) th:nth-child(odd):nth-child(n+3):nth-child(-n+19) {
+            background-color: #17a2b8 !important;
+            color: white !important;
+            font-weight: bolder !important;
+        }
+        /* Màu vàng cho các cột "Điểm" tương ứng (vị trí chẵn: 4,6,8,...,20) */
+        #resultTable thead tr:nth-child(2) th:nth-child(even):nth-child(n+4):nth-child(-n+20) {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+            font-weight: bolder !important;
+        }
+        /* Màu cho header bảng so sánh */
+        #comparisonTable table thead th:nth-child(3),
+        #comparisonTable table thead th:nth-child(4) {
+            background-color: #d4edda !important;
+            color: #155724 !important;
+        }
+        #comparisonTable table thead th:nth-child(5),
+        #comparisonTable table thead th:nth-child(6) {
+            background-color: #e7f3ff !important;
+            color: #0056b3 !important;
+        }
+        #comparisonTable table thead th:nth-child(7),
+        #comparisonTable table thead th:nth-child(8) {
+            background-color: #fff3cd !important;
+            color: #856404 !important;
+        }
+        #comparisonTable table thead th:nth-child(9),
+        #comparisonTable table thead th:nth-child(10) {
+            background-color: #f8d7da !important;
+            color: #721c24 !important;
+        }
+        .table td {
+            vertical-align: middle;
+            border: 1px solid #dee2e6;
+            padding: 4px; /* Giảm padding */
+            font-size: 0.8em;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) > td {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        h1, h2, h3 {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 1.2em; /* Giảm font tiêu đề */
+        }
+        h2 { font-size: 1.1em; }
+        h3 { font-size: 1em; }
+        .container {
+            max-width: 1200px; /* Giảm max-width để gọn hơn */
+            padding: 0 10px;
+        }
+        .search-container {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .search-input {
+            width: 250px; /* Giảm width */
+            margin-right: 10px;
+        }
+        .highlight {
+            font-weight: bold !important;
+            background-color: #ffcccc !important;
+        }
+        .highlight td {
+            background-color: #ffcccc !important;
+        }
+        .footer-button {
+            text-align: center;
+            margin-top: 20px; /* Giảm margin */
+            padding: 15px;
+        }
+        /* Cải thiện responsive cho mobile */
+        @media (max-width: 768px) {
+            .input-col {
+                min-width: 80px;
+            }
+            .table {
+                font-size: 0.7em;
+            }
+            .search-input {
+                width: 100%;
+            }
+        }
+        /* Thêm transition mượt mà */
+        .card, .btn, .form-control {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Màu cho header THM và Điểm Xét trong bảng top */
+        #topMajorsTable table thead th.thm-header {
+            background-color: #17a2b8 !important;
+            color: white !important;
+            font-weight: bolder !important;
+        }
+        #topMajorsTable table thead th.max-score-header {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+            font-weight: bolder !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-3"> <!-- Giảm mt-5 thành mt-3 -->
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/vi/d/de/Logo_Tr%C6%B0%E1%BB%9Dng_%C4%90%E1%BA%A1i_h%E1%BB%8Dc_C%E1%BB%ADu_Long.svg" alt="Logo Đại học Cửu Long" class="logo">
+        </div>
+        <h1 class="text-center mb-3 text-white">Tính Điểm Tổ Hợp Môn Và Ngành Có Tỉ Lệ xét tuyển Đậu Cao Nhất</h1> <!-- Giảm mb-4 -->
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card p-3"> <!-- Giảm p-4 -->
+                    <form id="inputForm">
+                        <h3 class="text-center text-secondary mb-3">Nhập Điểm Các Môn (thang 10, ví dụ: nhập 100 sẽ tự động thành 10.0)</h3> <!-- Giảm mb-4 -->
+                        <p class="note">Lưu ý: nếu điểm THPT có 12 môn học hoặc 7 môn học thì nhập đúng số lượng môn học</p>
+                        <div class="row input-row">
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">TOÁN:</label>
+                                <input type="number" class="form-control" id="TOÁN" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">VĂN:</label>
+                                <input type="number" class="form-control" id="VĂN" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">NGOẠI NGỮ:</label>
+                                <input type="number" class="form-control" id="NGOẠI NGỮ" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">VẬT LÝ:</label>
+                                <input type="number" class="form-control" id="VẬT LÝ" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">HOÁ HỌC:</label>
+                                <input type="number" class="form-control" id="HOÁ HỌC" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">SINH HỌC:</label>
+                                <input type="number" class="form-control" id="SINH HỌC" min="0" max="10" step="0.1">
+                            </div>
+                        </div>
+                        <div class="row input-row">
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">LỊCH SỬ:</label>
+                                <input type="number" class="form-control" id="LỊCH SỬ" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">ĐỊA LÝ:</label>
+                                <input type="number" class="form-control" id="ĐỊA LÝ" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">GD KTPL:</label>
+                                <input type="number" class="form-control" id="GD KTPL" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">CÔNG NGHỆ NN:</label>
+                                <input type="number" class="form-control" id="CÔNG NGHỆ NN" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">CÔNG NGHỆ CN:</label>
+                                <input type="number" class="form-control" id="CÔNG NGHỆ CN" min="0" max="10" step="0.1">
+                            </div>
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">TIN HỌC:</label>
+                                <input type="number" class="form-control" id="TIN HỌC" min="0" max="10" step="0.1">
+                            </div>
+                        </div>
+                        <div class="row input-row">
+                            <div class="col-md-2 input-col">
+                                <label class="input-label">GDQP-AN:</label>
+                                <input type="number" class="form-control" id="GDQP-AN" min="0" max="10" step="0.1">
+                            </div>
+                        </div>
+                        <div class="row priority-row">
+                            <div class="col-md-3 priority-col">
+                                <label class="priority-label">Khu Vực:</label>
+                                <select id="kv" class="form-select">
+                                    <option value="">Chọn Khu Vực</option>
+                                    <option value="1">1 (0.75 điểm)</option>
+                                    <option value="2NT">2NT (0.5 điểm)</option>
+                                    <option value="2">2 (0.25 điểm)</option>
+                                    <option value="3">3 (0 điểm)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 priority-col">
+                                <label class="priority-label">Đối Tượng:</label>
+                                <select id="dt" class="form-select">
+                                    <option value="">Chọn Đối Tượng</option>
+                                    <option value="01">01 (2 điểm)</option>
+                                    <option value="02">02 (2 điểm)</option>
+                                    <option value="03">03 (2 điểm)</option>
+                                    <option value="04">04 (2 điểm)</option>
+                                    <option value="05">05 (1 điểm)</option>
+                                    <option value="06">06 (1 điểm)</option>
+                                    <option value="07">07 (1 điểm)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3 btn-group"> <!-- Giảm mt-4 -->
+                            <button type="button" class="btn btn-primary btn-lg me-2" onclick="calculate()">Tính Điểm</button>
+                            <button type="button" class="btn btn-secondary btn-lg" onclick="resetForm()">Nhập Lại</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="result" class="hidden mt-4"> <!-- Giảm mt-5 -->
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="card p-3"> <!-- Giảm p-4 -->
+                        <h2 class="text-center text-success mb-3">Kết Quả Tính Xét Điểm Tổ Hợp Môn Và Ngành Có Tỉ Lệ xét tuyển Đậu Cao Nhất</h2> <!-- Giảm mb-4 -->
+                        <p id="priorityNote" class="note">Lưu ý: điểm này chưa cộng điểm Đối Tượng và Điểm Khu Vực</p>
+                        <div class="search-container">
+                            <input type="text" class="form-control search-input" id="resultSearch" placeholder="Tìm kiếm ngành (ví dụ: CNTT, ô tô, yk, quản trị...)">
+                        </div>
+                        <div class="table-responsive">
+                            <table id="resultTable" class="table table-striped table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Mã Xét Tuyển</th>
+                                        <th>Tên Ngành</th>
+                                        <th colspan="18">Tổ Hợp Môn và Điểm</th>
+                                        <th colspan="3">Điểm THM cao nhất và TBM</th>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th>1</th><th>Điểm</th><th>2</th><th>Điểm</th><th>3</th><th>Điểm</th><th>4</th><th>Điểm</th>
+                                        <th>5</th><th>Điểm</th><th>6</th><th>Điểm</th><th>7</th><th>Điểm</th><th>8</th><th>Điểm</th><th>9</th><th>Điểm</th>
+                                        <th>THM</th><th>Điểm THM</th><th>Điểm TBM HB</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div id="topMajorsTable">
+                            <h3 class="text-center text-primary mt-3">Danh sách ngành có tỉ lệ điểm đậu cao nhất (dựa trên Điểm THM cao nhất)</h3> <!-- Giảm mt-4 -->
+                            <div class="search-container">
+                                <input type="text" class="form-control search-input" id="topSearch" placeholder="Tìm kiếm ngành (ví dụ: CNTT, ô tô, yk, quản trị...)">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên Ngành</th>
+                                            <th>Mã Xét Tuyển</th>
+                                            <th class="thm-header">THM</th>
+                                            <th class="max-score-header">Điểm Xét</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="tbmSection">
+                            <h3 class="text-center text-info mt-3">Điểm TBM của các môn học đã nhập</h3> <!-- Giảm mt-4 -->
+                            <p>Số môn đã nhập: <span id="numSubjects">0</span></p>
+                            <p>Điểm TBM là: <span id="tbmValue">0</span></p>
+                            <p>Điểm TBM HB: <span id="tbmFinal">0</span></p>
+                        </div>
+                        <div id="comparisonSection" class="text-center mt-3"> <!-- Giảm mt-4 -->
+                            <p>Bạn có muốn xem kết quả xét so sánh để biết điểm xét tuyển và kết quả của:</p>
+                            <div class="row year-select-row justify-content-center">
+                                <div class="col-md-3">
+                                    <select id="compareYear" class="form-select" onchange="compareWithFloor()">
+                                        <option value="">Chọn Năm</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026 (Chưa có dữ liệu)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="comparisonTable" class="table-responsive mt-2 hidden"> <!-- Giảm mt-3 -->
+                                <h4 class="text-center text-warning">So sánh với Điểm Sàn Năm <span id="selectedYear"></span> (Học Bạ và Thi THPT)</h4>
+                                <p class="note">Lưu ý: Kết Quả TBM Học Bạ chỉ tính cho điểm sàn học bạ</p>
+                                <div class="search-container">
+                                    <input type="text" class="form-control search-input" id="comparisonSearch" placeholder="Tìm kiếm ngành (ví dụ: CNTT, ô tô, yk, quản trị...)">
+                                </div>
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Mã Ngành</th>
+                                            <th>Tên Ngành</th>
+                                            <th>Điểm Xét THM HB</th>
+                                            <th>Kết Quả THM Học Bạ</th>
+                                            <th>Điểm Xét THM thi THPT</th>
+                                            <th>Kết Quả THM thi THPT</th>
+                                            <th>Điểm TBM HB</th>
+                                            <th>Kết Quả TBM Học Bạ</th>
+                                            <th>Điểm Sàn Học Bạ</th>
+                                            <th>Điểm Sàn THPT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="comparisonBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-button">
+        <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='thongtindonmiengiam.html'">Mẫu đơn miễn giảm học phí DHCL</button>
+          <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='giaodien.html'">Về trang giao diện</button>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Map tổ hợp to 3 môn (cập nhật theo dữ liệu 2025)
+        const thmToSubjects = {
+            'A00': ['TOÁN', 'VẬT LÝ', 'HOÁ HỌC'],
+            'A01': ['TOÁN', 'VẬT LÝ', 'NGOẠI NGỮ'],
+            'A02': ['TOÁN', 'VẬT LÝ', 'SINH HỌC'],
+            'A03': ['TOÁN', 'VẬT LÝ', 'LỊCH SỬ'],
+            'A04': ['TOÁN', 'VẬT LÝ', 'ĐỊA LÝ'],
+            'A05': ['TOÁN', 'HOÁ HỌC', 'LỊCH SỬ'],
+            'A07': ['TOÁN', 'LỊCH SỬ', 'ĐỊA LÝ'],
+            'A10': ['TOÁN', 'VẬT LÝ', 'GD KTPL'],
+            'B00': ['TOÁN', 'HOÁ HỌC', 'SINH HỌC'],
+            'B03': ['TOÁN', 'VĂN', 'SINH HỌC'],
+            'B08': ['TOÁN', 'SINH HỌC', 'NGOẠI NGỮ'],
+            'C00': ['VĂN', 'LỊCH SỬ', 'ĐỊA LÝ'],
+            'C01': ['TOÁN', 'VĂN', 'VẬT LÝ'],
+            'C03': ['TOÁN', 'VĂN', 'LỊCH SỬ'],
+            'C04': ['TOÁN', 'VĂN', 'ĐỊA LÝ'],
+            'C07': ['VĂN', 'VẬT LÝ', 'LỊCH SỬ'],
+            'C08': ['VĂN', 'HOÁ HỌC', 'SINH HỌC'],
+            'D01': ['TOÁN', 'VĂN', 'NGOẠI NGỮ'],
+            'D07': ['TOÁN', 'HOÁ HỌC', 'NGOẠI NGỮ'],
+            'D08': ['TOÁN', 'SINH HỌC', 'NGOẠI NGỮ'],
+            'D09': ['TOÁN', 'LỊCH SỬ', 'NGOẠI NGỮ'],
+            'D10': ['TOÁN', 'ĐỊA LÝ', 'NGOẠI NGỮ'],
+            'D14': ['VĂN', 'LỊCH SỬ', 'NGOẠI NGỮ'],
+            'D15': ['VĂN', 'ĐỊA LÝ', 'NGOẠI NGỮ'],
+            'X02': ['TOÁN', 'VĂN', 'TIN HỌC'],
+            'X04': ['TOÁN', 'VĂN', 'CÔNG NGHỆ NN'],
+            'X05': ['TOÁN', 'VẬT LÝ', 'GD KTPL'],
+            'X06': ['TOÁN', 'VẬT LÝ', 'TIN HỌC'],
+            'X07': ['TOÁN', 'VẬT LÝ', 'CÔNG NGHỆ CN'],
+            'X08': ['TOÁN', 'VẬT LÝ', 'CÔNG NGHỆ NN'],
+            'X11': ['TOÁN', 'HOÁ HỌC', 'CÔNG NGHỆ CN'],
+            'X12': ['TOÁN', 'HOÁ HỌC', 'CÔNG NGHỆ NN'],
+            'X16': ['TOÁN', 'SINH HỌC', 'CÔNG NGHỆ NN'],
+            'X17': ['TOÁN', 'LỊCH SỬ', 'GD KTPL'],
+            'X21': ['TOÁN', 'ĐỊA LÝ', 'GD KTPL'],
+            'X26': ['TOÁN', 'TIN HỌC', 'NGOẠI NGỮ'],
+            'X56': ['TOÁN', 'TIN HỌC', 'CÔNG NGHỆ CN'],
+            'X78': ['VĂN', 'GD KTPL', 'NGOẠI NGỮ']
+        };
+
+        // Thứ tự ưu tiên cho THM (từ A00 đến X78)
+        const thmOrder = {
+            'A00': 1, 'A01': 2, 'A02': 3, 'A03': 4, 'A04': 5, 'A05': 6, 'A07': 7, 'A10': 8,
+            'B00': 9, 'B03': 10, 'B08': 11,
+            'C00': 12, 'C01': 13, 'C03': 14, 'C04': 15, 'C07': 16, 'C08': 17,
+            'D01': 18, 'D07': 19, 'D08': 20, 'D09': 21, 'D10': 22, 'D14': 23, 'D15': 24,
+            'X02': 25, 'X04': 26, 'X05': 27, 'X06': 28, 'X07': 29, 'X08': 30, 'X11': 31,
+            'X12': 32, 'X16': 33, 'X17': 34, 'X21': 35, 'X26': 36, 'X56': 37, 'X78': 38
+        };
+
+        // Điểm Khu Vực
+        const kvPoints = {
+            '1': 0.75,
+            '2NT': 0.5,
+            '2': 0.25,
+            '3': 0
+        };
+
+        // Điểm Đối Tượng
+        const dtPoints = {
+            '01': 2, '02': 2, '03': 2, '04': 2,
+            '05': 1, '06': 1, '07': 1
+        };
+
+        // Điểm sàn Học Bạ
+        const hocBaPoints = {
+            2025: {
+                "7210403": 18, // Thiết kế đồ họa
+                "7220101": 18, // Tiếng Việt và văn hóa Việt Nam
+                "7220201": 18, // Ngôn ngữ Anh
+                "7310110": 18, // Quản lý kinh tế
+                "7310608": 18, // Đông phương học
+                "7340101": 18, // Quản trị kinh doanh
+                "7340115": 18, // Marketing
+                "7340121": 18, // Kinh doanh thương mại
+                "7340201": 18, // Tài chính – Ngân hàng
+                "7340205": 18, // Công nghệ tài chính
+                "7340301": 18, // Kế toán
+                "7380101": 18, // Luật
+                "7380107": 18, // Luật kinh tế
+                "7480201": 18, // Công nghệ thông tin
+                "7510102": 18, // Công nghệ kỹ thuật công trình xây dựng
+                "7510201": 18, // Công nghệ kỹ thuật cơ khí
+                "7510205": 18, // Công nghệ kỹ thuật ô tô
+                "7510301": 18, // Công nghệ kỹ thuật điện, điện tử
+                "7520212": 18, // Kỹ thuật y sinh
+                "7540101": 18, // Công nghệ thực phẩm
+                "7580205": 18, // Kỹ thuật xây dựng công trình giao thông
+                "7620109": 18, // Nông học
+                "7620112": 18, // Bảo vệ thực vật
+                "7620301": 18, // Nuôi trồng thủy sản
+                "7640101": 18, // Thú y
+                "7720101": 24, // Y khoa
+                "7720115": 24, // Y học cổ truyền
+                "7720201": 24, // Dược học
+                "7720301": 24, // Điều dưỡng
+                "7720302": 24, // Hộ sinh
+                "7720501": 24, // Răng - Hàm - Mặt
+                "7720601": 24, // Kỹ thuật xét nghiệm y học
+                "7720602": 24, // Kỹ thuật hình ảnh y học
+                "7720603": 24, // Kỹ thuật phục hồi chức năng
+                "7760101": 18, // Công tác xã hội
+                "7810103": 18, // Quản trị dịch vụ du lịch và lữ hành
+                "7320104": 18, // Truyền thông đa phương tiện
+                "7320108": 18  // Quan hệ công chúng
+            },
+            2026: {
+                /*
+                "7210403": 18, // Thiết kế đồ họa (mẫu - chỉnh sửa năm sau)
+                "7220101": 18, // Tiếng Việt và văn hóa Việt Nam (mẫu - chỉnh sửa năm sau)
+                "7220201": 18, // Ngôn ngữ Anh (mẫu - chỉnh sửa năm sau)
+                "7310110": 18, // Quản lý kinh tế (mẫu - chỉnh sửa năm sau)
+                "7310608": 18, // Đông phương học (mẫu - chỉnh sửa năm sau)
+                "7340101": 18, // Quản trị kinh doanh (mẫu - chỉnh sửa năm sau)
+                "7340115": 18, // Marketing (mẫu - chỉnh sửa năm sau)
+                "7340121": 18, // Kinh doanh thương mại (mẫu - chỉnh sửa năm sau)
+                "7340201": 18, // Tài chính – Ngân hàng (mẫu - chỉnh sửa năm sau)
+                "7340205": 18, // Công nghệ tài chính (mẫu - chỉnh sửa năm sau)
+                "7340301": 18, // Kế toán (mẫu - chỉnh sửa năm sau)
+                "7380101": 18, // Luật (mẫu - chỉnh sửa năm sau)
+                "7380107": 18, // Luật kinh tế (mẫu - chỉnh sửa năm sau)
+                "7480201": 18, // Công nghệ thông tin (mẫu - chỉnh sửa năm sau)
+                "7510102": 18, // Công nghệ kỹ thuật công trình xây dựng (mẫu - chỉnh sửa năm sau)
+                "7510201": 18, // Công nghệ kỹ thuật cơ khí (mẫu - chỉnh sửa năm sau)
+                "7510205": 18, // Công nghệ kỹ thuật ô tô (mẫu - chỉnh sửa năm sau)
+                "7510301": 18, // Công nghệ kỹ thuật điện, điện tử (mẫu - chỉnh sửa năm sau)
+                "7520212": 18, // Kỹ thuật y sinh (mẫu - chỉnh sửa năm sau)
+                "7540101": 18, // Công nghệ thực phẩm (mẫu - chỉnh sửa năm sau)
+                "7580205": 18, // Kỹ thuật xây dựng công trình giao thông (mẫu - chỉnh sửa năm sau)
+                "7620109": 18, // Nông học (mẫu - chỉnh sửa năm sau)
+                "7620112": 18, // Bảo vệ thực vật (mẫu - chỉnh sửa năm sau)
+                "7620301": 18, // Nuôi trồng thủy sản (mẫu - chỉnh sửa năm sau)
+                "7640101": 18, // Thú y (mẫu - chỉnh sửa năm sau)
+                "7720101": 24, // Y khoa (mẫu - chỉnh sửa năm sau)
+                "7720115": 24, // Y học cổ truyền (mẫu - chỉnh sửa năm sau)
+                "7720201": 24, // Dược học (mẫu - chỉnh sửa năm sau)
+                "7720301": 24, // Điều dưỡng (mẫu - chỉnh sửa năm sau)
+                "7720302": 24, // Hộ sinh (mẫu - chỉnh sửa năm sau)
+                "7720501": 24, // Răng - Hàm - Mặt (mẫu - chỉnh sửa năm sau)
+                "7720601": 24, // Kỹ thuật xét nghiệm y học (mẫu - chỉnh sửa năm sau)
+                "7720602": 24, // Kỹ thuật hình ảnh y học (mẫu - chỉnh sửa năm sau)
+                "7720603": 24, // Kỹ thuật phục hồi chức năng (mẫu - chỉnh sửa năm sau)
+                "7760101": 18, // Công tác xã hội (mẫu - chỉnh sửa năm sau)
+                "7810103": 18, // Quản trị dịch vụ du lịch và lữ hành (mẫu - chỉnh sửa năm sau)
+                "7320104": 18, // Truyền thông đa phương tiện (mẫu - chỉnh sửa năm sau)
+                "7320108": 18  // Quan hệ công chúng (mẫu - chỉnh sửa năm sau) */
+            }
+        };
+
+        // Điểm sàn Thi THPT
+        const thptPoints = {
+            2025: {
+                "7210403": 15, // Thiết kế đồ họa
+                "7220101": 15, // Tiếng Việt và văn hóa Việt Nam
+                "7220201": 15, // Ngôn ngữ Anh
+                "7310110": 15, // Quản lý kinh tế
+                "7310608": 15, // Đông phương học
+                "7340101": 15, // Quản trị kinh doanh
+                "7340115": 15, // Marketing
+                "7340121": 15, // Kinh doanh thương mại
+                "7340201": 15, // Tài chính – Ngân hàng
+                "7340205": 15, // Công nghệ tài chính
+                "7340301": 15, // Kế toán
+                "7380101": 15, // Luật
+                "7380107": 15, // Luật kinh tế
+                "7480201": 15, // Công nghệ thông tin
+                "7510102": 15, // Công nghệ kỹ thuật công trình xây dựng
+                "7510201": 15, // Công nghệ kỹ thuật cơ khí
+                "7510205": 15, // Công nghệ kỹ thuật ô tô
+                "7510301": 15, // Công nghệ kỹ thuật điện, điện tử
+                "7520212": 15, // Kỹ thuật y sinh
+                "7540101": 15, // Công nghệ thực phẩm
+                "7580205": 15, // Kỹ thuật xây dựng công trình giao thông
+                "7620109": 15, // Nông học
+                "7620112": 15, // Bảo vệ thực vật
+                "7620301": 15, // Nuôi trồng thủy sản
+                "7640101": 15, // Thú y
+                "7720101": 20.5, // Y khoa
+                "7720115": 19, // Y học cổ truyền
+                "7720201": 19, // Dược học
+                "7720301": 17, // Điều dưỡng
+                "7720302": 17, // Hộ sinh
+                "7720501": 20.5, // Răng - Hàm - Mặt
+                "7720601": 17, // Kỹ thuật xét nghiệm y học
+                "7720602": 17, // Kỹ thuật hình ảnh y học
+                "7720603": 17, // Kỹ thuật phục hồi chức năng
+                "7760101": 15, // Công tác xã hội
+                "7810103": 15, // Quản trị dịch vụ du lịch và lữ hành
+                "7320104": 15, // Truyền thông đa phương tiện
+                "7320108": 15  // Quan hệ công chúng
+            },
+            2026: {
+                /*"7210403": 15, // Thiết kế đồ họa (mẫu - chỉnh sửa năm sau)
+                "7220101": 15, // Tiếng Việt và văn hóa Việt Nam (mẫu - chỉnh sửa năm sau)
+                "7220201": 15, // Ngôn ngữ Anh (mẫu - chỉnh sửa năm sau)
+                "7310110": 15, // Quản lý kinh tế (mẫu - chỉnh sửa năm sau)
+                "7310608": 15, // Đông phương học (mẫu - chỉnh sửa năm sau)
+                "7340101": 15, // Quản trị kinh doanh (mẫu - chỉnh sửa năm sau)
+                "7340115": 15, // Marketing (mẫu - chỉnh sửa năm sau)
+                "7340121": 15, // Kinh doanh thương mại (mẫu - chỉnh sửa năm sau)
+                "7340201": 15, // Tài chính – Ngân hàng (mẫu - chỉnh sửa năm sau)
+                "7340205": 15, // Công nghệ tài chính (mẫu - chỉnh sửa năm sau)
+                "7340301": 15, // Kế toán (mẫu - chỉnh sửa năm sau)
+                "7380101": 15, // Luật (mẫu - chỉnh sửa năm sau)
+                "7380107": 15, // Luật kinh tế (mẫu - chỉnh sửa năm sau)
+                "7480201": 15, // Công nghệ thông tin (mẫu - chỉnh sửa năm sau)
+                "7510102": 15, // Công nghệ kỹ thuật công trình xây dựng (mẫu - chỉnh sửa năm sau)
+                "7510201": 15, // Công nghệ kỹ thuật cơ khí (mẫu - chỉnh sửa năm sau)
+                "7510205": 15, // Công nghệ kỹ thuật ô tô (mẫu - chỉnh sửa năm sau)
+                "7510301": 15, // Công nghệ kỹ thuật điện, điện tử (mẫu - chỉnh sửa năm sau)
+                "7520212": 15, // Kỹ thuật y sinh (mẫu - chỉnh sửa năm sau)
+                "7540101": 15, // Công nghệ thực phẩm (mẫu - chỉnh sửa năm sau)
+                "7580205": 15, // Kỹ thuật xây dựng công trình giao thông (mẫu - chỉnh sửa năm sau)
+                "7620109": 15, // Nông học (mẫu - chỉnh sửa năm sau)
+                "7620112": 15, // Bảo vệ thực vật (mẫu - chỉnh sửa năm sau)
+                "7620301": 15, // Nuôi trồng thủy sản (mẫu - chỉnh sửa năm sau)
+                "7640101": 15, // Thú y (mẫu - chỉnh sửa năm sau)
+                "7720101": 20.5, // Y khoa (mẫu - chỉnh sửa năm sau)
+                "7720115": 19, // Y học cổ truyền (mẫu - chỉnh sửa năm sau)
+                "7720201": 19, // Dược học (mẫu - chỉnh sửa năm sau)
+                "7720301": 17, // Điều dưỡng (mẫu - chỉnh sửa năm sau)
+                "7720302": 17, // Hộ sinh (mẫu - chỉnh sửa năm sau)
+                "7720501": 20.5, // Răng - Hàm - Mặt (mẫu - chỉnh sửa năm sau)
+                "7720601": 17, // Kỹ thuật xét nghiệm y học (mẫu - chỉnh sửa năm sau)
+                "7720602": 17, // Kỹ thuật hình ảnh y học (mẫu - chỉnh sửa năm sau)
+                "7720603": 17, // Kỹ thuật phục hồi chức năng (mẫu - chỉnh sửa năm sau)
+                "7760101": 15, // Công tác xã hội (mẫu - chỉnh sửa năm sau)
+                "7810103": 15, // Quản trị dịch vụ du lịch và lữ hành (mẫu - chỉnh sửa năm sau)
+                "7320104": 15, // Truyền thông đa phương tiện (mẫu - chỉnh sửa năm sau)
+                "7320108": 15  // Quan hệ công chúng (mẫu - chỉnh sửa năm sau)*/
+            }
+        };
+
+        // Danh sách ngành với mã và tổ hợp (cập nhật đầy đủ 38 ngành 2025)
+        const majors = {
+            "7210403": {name: "Thiết kế đồ họa", thms: ["A00", "A01", "A07", "C01", "C04", "D01", "D09", "D10", "X02"]},
+            "7220101": {name: "Tiếng Việt và văn hóa Việt Nam", thms: ["A01", "A03", "C00", "C03", "C04", "D01", "D14", "D15"]},
+            "7220201": {name: "Ngôn ngữ Anh", thms: ["A01", "D01", "D07", "D08", "D09", "D10", "D14", "D15", "X78"]},
+            "7310110": {name: "Quản lý kinh tế", thms: ["A00", "A01", "C03", "C04", "D01", "A03", "X02", "X17", "X21"]},
+            "7310608": {name: "Đông phương học", thms: ["A01", "A03", "C00", "C01", "C03", "C04", "D01", "D14", "D15"]},
+            "7340101": {name: "Quản trị kinh doanh", thms: ["A00", "A01", "C03", "C04", "D01", "A03", "X02", "X17", "X21"]},
+            "7340115": {name: "Marketing", thms: ["A00", "A01", "C03", "C04", "D01", "A03", "X02", "X17", "X21"]},
+            "7340121": {name: "Kinh doanh thương mại", thms: ["A00", "A01", "C03", "C04", "D01", "A03", "X02", "X17", "X21"]},
+            "7340201": {name: "Tài chính – Ngân hàng", thms: ["A00", "A01", "A03", "C04", "D01", "X02", "X05", "X08", "X26"]},
+            "7340205": {name: "Công nghệ tài chính", thms: ["A00", "A01", "A03", "C04", "D01", "X02", "X05", "X08", "X26"]},
+            "7340301": {name: "Kế toán", thms: ["A00", "A01", "A03", "C04", "D01", "X02", "X05", "X08", "X26"]},
+            "7380101": {name: "Luật", thms: ["A00", "A01", "C00", "C03", "C07", "D01", "X02", "X17", "X21"]},
+            "7380107": {name: "Luật kinh tế", thms: ["A00", "A01", "C00", "C03", "C07", "D01", "X02", "X17", "X21"]},
+            "7480201": {name: "Công nghệ thông tin", thms: ["A00", "A01", "D01", "D07", "C01", "X02", "X04", "X06", "X26"]},
+            "7510102": {name: "Công nghệ kỹ thuật công trình xây dựng", thms: ["A00", "A01", "A03", "C01", "D01", "X06", "X07", "X08", "X56"]},
+            "7510201": {name: "Công nghệ kỹ thuật cơ khí", thms: ["A00", "A01", "A03", "C01", "D01", "X06", "X07", "X08", "X56"]},
+            "7510205": {name: "Công nghệ kỹ thuật ô tô", thms: ["A00", "A01", "A03", "C01", "D01", "X06", "X07", "X08", "X56"]},
+            "7510301": {name: "Công nghệ kỹ thuật điện - điện tử", thms: ["A00", "A01", "A03", "C01", "D01", "X06", "X07", "X08", "X56"]},
+            "7520212": {name: "Kỹ thuật y sinh", thms: ["A00", "A01", "A03", "C01", "D01", "X06", "X07", "X08", "X56"]},
+            "7540101": {name: "Công nghệ thực phẩm", thms: ["A00", "A01", "A02", "A10", "B00", "C01", "D01", "D07", "X11"]},
+            "7580205": {name: "Kỹ thuật xây dựng công trình giao thông", thms: ["A00", "A01", "A03", "C01", "D01", "X06", "X07", "X08", "X56"]},
+            "7620109": {name: "Nông học", thms: ["A00", "A01", "A02", "B00", "B03", "B08", "D01", "X12", "X16"]},
+            "7620112": {name: "Bảo vệ thực vật", thms: ["A00", "A01", "A02", "B00", "B03", "B08", "D01", "X12", "X16"]},
+            "7620301": {name: "Nuôi trồng thủy sản", thms: ["A00", "A01", "A02", "B00", "B03", "B08", "D01", "X12", "X16"]},
+            "7640101": {name: "Thú y", thms: ["A00", "A01", "A02", "B00", "B03", "B08", "D01", "X12", "X16"]},
+            "7720101": {name: "Y khoa", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720115": {name: "Y học cổ truyền", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720201": {name: "Dược học", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720301": {name: "Điều dưỡng", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720302": {name: "Hộ sinh", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720501": {name: "Răng - Hàm - Mặt", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720601": {name: "Kỹ thuật xét nghiệm y học", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720603": {name: "Kỹ thuật phục hồi chức năng", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7760101": {name: "Công tác xã hội", thms: ["A00", "A03", "A04", "A05", "C00", "C01", "D01", "D14", "D15"]},
+            "7810103": {name: "Quản trị dịch vụ du lịch và lữ hành", thms: ["A00", "A01", "C00", "C03", "C04", "C07", "D01", "X17", "X21"]},
+            "7320104": {name: "Truyền thông đa phương tiện", thms: ["A00", "A01", "D01", "C00", "C01", "C03", "C04", "X02", "X06"]},
+            "7320108": {name: "Quan hệ công chúng", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]},
+            "7720602": {name: "Kỹ thuật hình ảnh y học", thms: ["A00", "A01", "A02", "B00", "B03", "C01", "C08", "D07", "B08"]}
+        };
+
+        let majorScores = []; // Lưu điểm của các ngành để so sánh sau
+        let avgTBM = 0; // Lưu TBM trung bình
+
+        // Map viết tắt môn học
+        const subjectAbbrev = {
+            'TOÁN': 'T',
+            'VĂN': 'V',
+            'NGOẠI NGỮ': 'A',
+            'VẬT LÝ': 'L',
+            'HOÁ HỌC': 'H',
+            'SINH HỌC': 'Si',
+            'LỊCH SỬ': 'Su',
+            'ĐỊA LÝ': 'D',
+            'GD KTPL': 'P',
+            'CÔNG NGHỆ NN': 'N',
+            'CÔNG NGHỆ CN': 'C',
+            'TIN HỌC': 'Ti'
+        };
+
+        // Hàm lấy viết tắt cho THM
+        function getThmAbbrev(thm) {
+            const subjects = thmToSubjects[thm] || [];
+            const abbrevs = subjects.map(sub => subjectAbbrev[sub] || sub.charAt(0));
+            return abbrevs.join('');
+        }
+
+        function getScore(subject) {
+            const elem = document.getElementById(subject);
+            return parseFloat(elem ? elem.value : 0) || 0;
+        }
+
+        function formatScore(score) {
+            if (score === 0) {
+                return ''; // Hiển thị trống nếu điểm = 0
+            }
+            let formatted = score.toFixed(1);
+            if (formatted.endsWith('.0')) {
+                formatted = formatted.slice(0, -2);
+            }
+            return formatted;
+        }
+
+        function calculateThmScore(thm) {
+            const subjects = thmToSubjects[thm] || [];
+            let sum = 0;
+            subjects.forEach(sub => {
+                sum += getScore(sub);
+            });
+            return sum;
+        }
+
+        function getPriority(score, basePriority) {
+            if (score < 22.5) {
+                return basePriority;
+            }
+            return ((30 - score) / 7.5) * basePriority;
+        }
+
+        function calculateTBM() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            let sum = 0;
+            let count = 0;
+            inputs.forEach(input => {
+                const val = parseFloat(input.value) || 0;
+                if (val > 0) {
+                    sum += val;
+                    count++;
+                }
+            });
+            avgTBM = count > 0 ? sum / count : 0;
+            document.getElementById('numSubjects').innerText = count;
+            document.getElementById('tbmValue').innerText = formatScore(avgTBM);
+            return avgTBM;
+        }
+
+        function calculate() {
+            const kv = document.getElementById('kv').value;
+            const dt = document.getElementById('dt').value;
+            const basePriority = (kvPoints[kv] || 0) + (dtPoints[dt] || 0);
+            const hasPriority = kv || dt;
+
+            // Cập nhật lưu ý
+            const noteText = hasPriority ? "Lưu ý: cách tính điểm xét tuyển khi cộng điểm KV và ĐT: Từ năm 2023, điểm ưu tiên đối với thí sinh đạt tổng điểm từ 22,5 trở lên (khi quy đổi về điểm theo thang 10 và tổng điểm 3 môn tối đa là 30) được xác định theo công thức sau: Điểm ưu tiên = [(30 – Tổng điểm đạt được)/7,5] × Mức điểm ưu tiên" : "Lưu ý: điểm này chưa cộng điểm Đối Tượng và Điểm Khu Vực";
+            document.getElementById('priorityNote').innerText = noteText;
+
+            // Cập nhật header cho top table
+            const topHeader = document.querySelector('#topMajorsTable h3');
+            topHeader.innerText = hasPriority ? "Danh sách ngành có tỉ lệ điểm đậu cao nhất (dựa trên Điểm Xét)" : "Danh sách ngành có tỉ lệ điểm đậu cao nhất (dựa trên Điểm THM cao nhất)";
+
+            const tbody = document.querySelector('#resultTable tbody');
+            tbody.innerHTML = '';
+            const topBody = document.getElementById('topTableBody');
+            topBody.innerHTML = '';
+
+            // Tính TBM
+            const avgTbm = calculateTBM();
+            const tbmScore = avgTbm * 3;
+            let tbmPriority = 0;
+            if (hasPriority) {
+                tbmPriority = getPriority(tbmScore, basePriority);
+            }
+            const tbmFinal = tbmScore + tbmPriority;
+            document.getElementById('tbmFinal').innerText = formatScore(tbmFinal);
+
+            majorScores = []; // Reset
+
+            Object.entries(majors).forEach(([code, data]) => {
+                const row = document.createElement('tr');
+                let cells = `<td>${code}</td><td>${data.name}</td>`;
+
+                const thms = data.thms.slice(0, 9); // Limit to 9
+                let maxScore = 0;
+                let bestThm = '';
+                const thmScores = [];
+
+                thms.forEach(thm => {
+                    const subjects = thmToSubjects[thm] || [];
+                    const hasAllScores = subjects.every(sub => getScore(sub) > 0);
+                    cells += `<td>${thm}(${getThmAbbrev(thm)})</td>`;
+                    if (hasAllScores) {
+                        const baseScore = calculateThmScore(thm);
+                        thmScores.push({ thm, score: baseScore });
+                        if (baseScore > maxScore) {
+                            maxScore = baseScore;
+                            bestThm = thm;
+                        }
+                        cells += `<td class="score-cell">${formatScore(baseScore)}</td>`;
+                    } else {
+                        cells += `<td class="score-cell"></td>`;
+                    }
+                });
+
+                // Pad with empty cells if less than 9
+                const numThm = thms.length;
+                for (let i = numThm; i < 9; i++) {
+                    cells += '<td></td><td class="score-cell"></td>';
+                }
+
+                let finalScore = maxScore;
+                let thmPriority = 0;
+                if (hasPriority) {
+                    thmPriority = getPriority(maxScore, basePriority);
+                    finalScore = maxScore + thmPriority;
+                }
+                cells += `<td class="thm-cell">${bestThm}(${getThmAbbrev(bestThm)})</td><td class="max-score-cell">${formatScore(hasPriority ? finalScore : maxScore)}</td><td class="tbm-cell">${formatScore(tbmFinal)}</td>`;
+
+                row.innerHTML = cells;
+                row.dataset.majorName = data.name.toLowerCase(); // Thêm data attribute để dễ tìm kiếm
+                tbody.appendChild(row);
+
+                // Collect for top list and comparison
+                majorScores.push({ code, name: data.name, bestThm, maxScore, finalScore, tbmFinal });
+            });
+
+            // Sort majors by finalScore or maxScore descending (cao đến thấp), tie-break by thmOrder[bestThm] ascending
+            majorScores.sort((a, b) => {
+                const scoreA = hasPriority ? a.finalScore : a.maxScore;
+                const scoreB = hasPriority ? b.finalScore : b.maxScore;
+                if (scoreA !== scoreB) {
+                    return scoreB - scoreA; // Cao đến thấp theo điểm
+                }
+                const orderA = thmOrder[a.bestThm] || 999;
+                const orderB = thmOrder[b.bestThm] || 999;
+                return orderA - orderB; // Nếu điểm bằng, sắp xếp theo thứ tự THM tăng dần (A00 trước)
+            });
+
+            // Display top table
+            majorScores.forEach((major, index) => {
+                const row = document.createElement('tr');
+                const scoreToShow = hasPriority ? formatScore(major.finalScore) : formatScore(major.maxScore);
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${major.name}</td>
+                    <td>${major.code}</td>
+                    <td class="thm-cell">${major.bestThm}(${getThmAbbrev(major.bestThm)})</td>
+                    <td class="max-score-cell">${scoreToShow}</td>
+                `;
+                row.dataset.majorName = major.name.toLowerCase(); // Thêm data attribute để dễ tìm kiếm
+                topBody.appendChild(row);
+            });
+
+            // Hiển thị phần so sánh
+            document.getElementById('comparisonSection').classList.remove('hidden');
+
+            document.getElementById('result').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            // Xóa tất cả inputs
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+            document.getElementById('kv').value = '';
+            document.getElementById('dt').value = '';
+            document.getElementById('compareYear').value = '';
+            
+            // Ẩn kết quả
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('comparisonTable').classList.add('hidden');
+            document.getElementById('comparisonSection').classList.add('hidden');
+            
+            // Reset lưu ý mặc định
+            document.getElementById('priorityNote').innerText = "Lưu ý: điểm này chưa cộng điểm Đối Tượng và Điểm Khu Vực";
+            
+            // Reset top header
+            document.querySelector('#topMajorsTable h3').innerText = "Danh sách ngành có tỉ lệ điểm đậu cao nhất (dựa trên Điểm THM cao nhất)";
+            
+            // Reset TBM
+            document.getElementById('numSubjects').innerText = 0;
+            document.getElementById('tbmValue').innerText = 0;
+            document.getElementById('tbmFinal').innerText = 0;
+            
+            // Reset search inputs
+            document.getElementById('resultSearch').value = '';
+            document.getElementById('topSearch').value = '';
+            document.getElementById('comparisonSearch').value = '';
+            
+            // Focus vào input đầu tiên
+            document.getElementById('TOÁN').focus();
+        }
+
+        function compareWithFloor() {
+            const year = document.getElementById('compareYear').value;
+            if (!year || !majorScores.length) return;
+
+            const hocBaData = hocBaPoints[year] || {};
+            const thptData = thptPoints[year] || {};
+            const tbody = document.getElementById('comparisonBody');
+            tbody.innerHTML = '';
+
+            document.getElementById('selectedYear').innerText = year;
+            document.getElementById('comparisonTable').classList.remove('hidden');
+
+            const hasPriority = document.getElementById('kv').value || document.getElementById('dt').value;
+
+            majorScores.forEach(major => {
+                const row = document.createElement('tr');
+                const thmScore = hasPriority ? major.finalScore : major.maxScore;
+                const tbmScore = major.tbmFinal;
+                const hocBa = hocBaData[major.code] || 0;
+                const thpt = thptData[major.code] || 0;
+                const thmHocBaResult = thmScore >= hocBa ? 'Đậu' : 'Không Đậu';
+                const thmThptResult = thmScore >= thpt ? 'Đậu' : 'Không Đậu';
+                const tbmHocBaResult = tbmScore >= hocBa ? 'Đậu' : 'Không Đậu';
+                const thmHocBaClass = thmHocBaResult === 'Đậu' ? 'result-pass' : 'result-fail';
+                const thmThptClass = thmThptResult === 'Đậu' ? 'result-pass' : 'result-fail';
+                const tbmHocBaClass = tbmHocBaResult === 'Đậu' ? 'result-pass' : 'result-fail';
+                row.innerHTML = `
+                    <td>${major.code}</td>
+                    <td>${major.name}</td>
+                    <td class="hb-group">${formatScore(thmScore)}</td>
+                    <td class="result-cell ${thmHocBaClass} hb-group">${thmHocBaResult}</td>
+                    <td class="thpt-group">${formatScore(thmScore)}</td>
+                    <td class="result-cell ${thmThptClass} thpt-group">${thmThptResult}</td>
+                    <td class="tbm-group">${formatScore(tbmScore)}</td>
+                    <td class="result-cell ${tbmHocBaClass} tbm-group">${tbmHocBaResult}</td>
+                    <td class="floor-score-cell">${formatScore(hocBa)}</td>
+                    <td class="floor-score-cell">${formatScore(thpt)}</td>
+                `;
+                row.dataset.majorName = major.name.toLowerCase(); // Thêm data attribute để dễ tìm kiếm
+                tbody.appendChild(row);
+            });
+        }
+
+        // Hàm normalize để loại bỏ dấu tiếng Việt
+        function normalize(str) {
+            return str.normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Remove accents
+                .replace(/đ/g, 'd').replace(/Đ/g, 'D') // Replace đ
+                .toLowerCase();
+        }
+
+        // Hàm Levenshtein Distance để tính similarity tốt hơn
+        function levenshteinDistance(str1, str2) {
+            str1 = str1.toLowerCase();
+            str2 = str2.toLowerCase();
+            const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+
+            for (let i = 0; i <= str1.length; i++) {
+                matrix[0][i] = i;
+            }
+            for (let j = 0; j <= str2.length; j++) {
+                matrix[j][0] = j;
+            }
+
+            for (let j = 1; j <= str2.length; j++) {
+                for (let i = 1; i <= str1.length; i++) {
+                    const cost = str2.charAt(j - 1) === str1.charAt(i - 1) ? 0 : 1;
+                    matrix[j][i] = Math.min(
+                        matrix[j - 1][i - 1] + cost, // substitution
+                        matrix[j][i - 1] + 1,     // insertion
+                        matrix[j - 1][i] + 1      // deletion
+                    );
+                }
+            }
+            return matrix[str2.length][str1.length];
+        }
+
+        // Hàm tính similarity dựa trên Levenshtein
+        function similarityScore(s1, s2) {
+            const distance = levenshteinDistance(s1, s2);
+            const maxLen = Math.max(s1.length, s2.length);
+            return maxLen === 0 ? 1 : 1 - (distance / maxLen);
+        }
+
+        // Hàm tạo acronym từ tên ngành (sử dụng normalized)
+        function generateAcronym(name) {
+            const words = normalize(name).split(/\s+/);
+            return words.map(word => word.charAt(0)).join('');
+        }
+
+        // Hàm tìm kiếm fuzzy cải thiện (với normalize và Levenshtein, threshold cao hơn để tránh highlight nhiều)
+        function fuzzySearch(query, names) {
+            const queryLower = query.toLowerCase().trim();
+            const queryNorm = normalize(queryLower);
+            if (!queryNorm) {
+                return []; // Không match gì khi query rỗng
+            }
+
+            const results = [];
+            names.forEach(name => {
+                const nameLower = name.toLowerCase();
+                const nameNorm = normalize(nameLower);
+                let score = 0.0;
+
+                // Exact substring trên normalized
+                if (nameNorm.includes(queryNorm)) {
+                    score = 1.0;
+                } else {
+                    // Word match cải thiện: chỉ count nếu exact match hoặc high similarity (>0.8)
+                    const queryWords = queryNorm.split(/\s+/);
+                    const nameWords = nameNorm.split(/\s+/);
+                    let wordMatches = 0;
+                    queryWords.forEach(qw => {
+                        nameWords.forEach(nw => {
+                            if (nw === qw || nw.includes(qw) || qw.includes(nw)) {
+                                wordMatches++;
+                            } else {
+                                const wordSim = similarityScore(qw, nw);
+                                if (wordSim > 0.8) {
+                                    wordMatches += wordSim;
+                                }
+                            }
+                        });
+                    });
+                    score = (wordMatches / Math.max(queryWords.length * nameWords.length, 1)) * 1.0;
+                }
+
+                // Acronym match (sử dụng normalized)
+                const acronym = generateAcronym(nameLower);
+                if (queryNorm === acronym || acronym.includes(queryNorm)) {
+                    score = Math.max(score, 1.0);
+                } else if (acronym.startsWith(queryNorm)) {
+                    score = Math.max(score, 0.95);
+                }
+
+                // Fuzzy similarity với Levenshtein trên toàn bộ chuỗi normalized (giảm trọng số)
+                const fuzzyScore = similarityScore(queryNorm, nameNorm);
+                score = Math.max(score, fuzzyScore * 0.7);
+
+                // Thêm match nếu tất cả từ query đều có trong name (order không quan trọng, nhưng chỉ nếu sim cao)
+                const queryWords = queryNorm.split(/\s+/);
+                if (queryWords.every(qw => nameNorm.includes(qw))) {
+                    score = Math.max(score, 0.98);
+                }
+
+                if (score > 0.7) { // Tăng threshold để chỉ highlight match tốt, tránh "tô vàng tùm lum"
+                    results.push({ name, score });
+                }
+            });
+
+            return results.sort((a, b) => b.score - a.score).slice(0, 5); // Giới hạn 5 kết quả tốt nhất
+        }
+
+        // Function để xử lý tìm kiếm mới - chỉ highlight nếu score cao
+        function performSearch(inputId, tableSelector) {
+            const searchValue = document.getElementById(inputId).value.trim();
+            const table = document.querySelector(tableSelector);
+            if (!table) return;
+            const rows = table.querySelectorAll('tbody tr');
+            const names = Array.from(rows).map(row => row.dataset.majorName || '');
+
+            const matches = fuzzySearch(searchValue, names);
+
+            let foundRow = null;
+            rows.forEach(row => {
+                row.classList.remove('highlight');
+                const majorName = row.dataset.majorName || '';
+                const match = matches.find(m => m.name === majorName);
+                if (match && match.score >= 0.8) { // Chỉ highlight nếu score rất cao
+                    row.classList.add('highlight');
+                    if (!foundRow) {
+                        foundRow = row;
+                    }
+                }
+            });
+
+            if (foundRow) {
+                foundRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Event listeners cho search với debounce để mượt hơn
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        const debouncedResultSearch = debounce(() => performSearch('resultSearch', '#resultTable'), 300);
+        const debouncedTopSearch = debounce(() => performSearch('topSearch', '#topMajorsTable table'), 300);
+        const debouncedComparisonSearch = debounce(() => performSearch('comparisonSearch', '#comparisonTable table'), 300);
+
+        document.getElementById('resultSearch').addEventListener('input', debouncedResultSearch);
+        document.getElementById('topSearch').addEventListener('input', debouncedTopSearch);
+        document.getElementById('comparisonSearch').addEventListener('input', debouncedComparisonSearch);
+
+        // Auto convert input if >10
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                let val = parseFloat(e.target.value);
+                if (!isNaN(val) && val > 10) {
+                    e.target.value = (val / 10).toFixed(1);
+                }
+            });
+        });
+
+        // Enter to next input
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    } else {
+                        calculate(); // Auto calculate on last enter
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
