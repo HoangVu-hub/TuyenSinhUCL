@@ -54,6 +54,18 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
+        .btn-info {
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 1em;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-info:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
         .btn-outline-danger {
             border-radius: 20px;
             padding: 10px 20px;
@@ -112,10 +124,36 @@
         .back-link a:hover {
             text-decoration: underline;
         }
+        .back-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .back-buttons a, .back-buttons button {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 20px;
+            padding: 10px 20px;
+            border: 1px solid white;
+            background: transparent;
+            transition: background 0.3s;
+        }
+        .back-buttons a:hover, .back-buttons button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            color: white;
+        }
         /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
+            }
+            .back-buttons {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -151,6 +189,9 @@
                         <a id="downloadLink" href="#" class="btn btn-primary" download>Tải Mẫu Đơn Miễn Giảm (PDF) từ Google Drive</a>
                         <a id="downloadWord" href="#" class="btn btn-secondary" download>Tải Mẫu Đơn (Word) từ Google Drive</a>
                         
+                        <!-- Nút tải mẫu điều kiện miễn giảm các ngành - chỉ hiển thị cho năm 2025, nằm dưới nút Word -->
+                        <a id="downloadConditions" href="#" class="btn btn-info hidden" download>Tải Mẫu Điều Kiện Miễn Giảm Các Ngành (PDF) từ Google Drive</a>
+                        
                         <!-- Nút reset để chọn lại năm -->
                         <button id="resetBtn" class="btn btn-outline-danger">Chọn Lại Năm Khác</button>
                         
@@ -161,7 +202,10 @@
         </div>
         
         <div class="back-link">
-            <a href="index.html">← Quay Về Trang Giao Diện</a>
+            <div class="back-buttons">
+                <a href="index.html">← Quay Về Trang Giao Diện</a>
+                <button id="reloadBtn">Chọn lại</button>
+            </div>
         </div>
     </div>
 
@@ -175,7 +219,8 @@
         const yearFiles = {
             '2025': {
                 pdf: 'https://drive.google.com/file/d/1gmvuNIHhYEXAf5dkVcfe5ZwIxMmme638/view?usp=sharing',
-                word: 'https://docs.google.com/document/d/1gfDb4o1udv2lY1vQul-s7P-CIPwapb4X/edit?usp=drive_link&ouid=113413466755243450976&rtpof=true&sd=true'
+                word: 'https://docs.google.com/document/d/1gfDb4o1udv2lY1vQul-s7P-CIPwapb4X/edit?usp=drive_link&ouid=113413466755243450976&rtpof=true&sd=true',
+                conditions: 'https://drive.google.com/file/d/1EAAi_hhSo4EHOgTaEynHPoYxU87GJZsN/view?usp=drive_link'  // Link mẫu tạm (PDF công khai về học bổng, thay bằng ID file thật của bạn)
             },
             '2026': {
                 pdf: 'https://drive.google.com/uc?export=download&id=YOUR_PDF_FILE_ID_2026',
@@ -193,6 +238,7 @@
             const selectedYearSpan = document.getElementById('selectedYear');
             const downloadLink = document.getElementById('downloadLink');
             const downloadWord = document.getElementById('downloadWord');
+            const downloadConditions = document.getElementById('downloadConditions');
 
             if (year) {
                 selectedYearSpan.textContent = year;
@@ -206,6 +252,14 @@
                         downloadLink.href = files.pdf;
                         downloadWord.href = files.word;
                         downloadSection.classList.remove('hidden');
+
+                        // Chỉ hiển thị nút điều kiện cho năm 2025
+                        if (year === '2025' && files.conditions && !files.conditions.includes('YOUR_')) {
+                            downloadConditions.href = files.conditions;
+                            downloadConditions.classList.remove('hidden');
+                        } else {
+                            downloadConditions.classList.add('hidden');
+                        }
                     }
                 } else {
                     alert('Link Google Drive cho năm này chưa được thiết lập. Vui lòng cập nhật code hoặc kiểm tra sau!');
@@ -220,6 +274,12 @@
         document.getElementById('resetBtn').addEventListener('click', function() {
             document.getElementById('yearSelect').value = '';
             document.getElementById('downloadSection').classList.add('hidden');
+            document.getElementById('downloadConditions').classList.add('hidden');
+        });
+
+        // Event listener cho nút tải lại trang
+        document.getElementById('reloadBtn').addEventListener('click', function() {
+            location.reload();
         });
     </script>
 </body>
